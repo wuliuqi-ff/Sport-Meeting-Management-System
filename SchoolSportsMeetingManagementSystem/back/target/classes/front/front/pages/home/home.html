@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <title>首页</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content="order by mobanxiu.cn"/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/animate.css"/><!-- 动画效果 -->
+    <link rel="stylesheet" href="../../xznstatic/css/swiper.min.css"/>
+    <script src="../../xznstatic/js/jquery-1.11.3.min.js"></script>
+    <script src="../../xznstatic/js/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css"/>
+
+    <link rel="stylesheet" href="../../css/theme.css"/>
+</head>
+<style>
+    /* 基础重置与全局设置 */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        background: #ffffff !important;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+    }
+
+    /* 全局背景处理 - 移除固定背景避免内容覆盖问题 */
+    html::after {
+        display: none;
+    }
+
+    /* 轮播图样式优化 */
+    #test1 {
+border-radius: 6px;
+        overflow: hidden;
+    }
+
+    #test1 .layui-carousel-ind li {
+        width: 20px;
+        height: 10px;
+        border: none;
+        border-radius: 6px;
+        background-color: #f7f7f7;
+        box-shadow: 0 0 6px rgba(255, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    #test1 .layui-carousel-ind li.layui-this {
+        width: 30px;
+        height: 10px;
+        background-color: rgba(160, 67, 26, 0.8);
+    }
+
+    .layui-carousel-ind {
+        position: relative;
+    }
+
+    .layui-carousel-ind ul {
+        position: absolute;
+        bottom: 15px !important;
+        z-index: 10;
+        padding: 0 10px;
+    }
+
+    /* 标题样式统一 */
+    .title {
+        padding: 10px 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .title span {
+        padding: 0 10px;
+        line-height: 1.4;
+    }
+
+    /* 列表容器基础样式 */
+    .box .list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    /* 模块分层样式优化 - 增强层次感 */
+    .module-container {
+        margin: 40px auto;
+        padding: 30px 20px;
+        position: relative;
+        max-width: 1200px; /* 限制最大宽度 */
+    }
+
+    .module-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ffffff;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+        border-radius: 12px;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+
+    .module-container:hover::before {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .module-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .module-title {
+        position: relative;
+        z-index: 3;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    /* 不同模块的层次差异 - 微调角度更自然 */
+    .module-container:nth-child(odd)::before {
+        transform: rotate(0.5deg);
+    }
+
+    .module-container:nth-child(even)::before {
+        transform: rotate(-0.5deg);
+    }
+
+    /* 各模块背景渐变优化 */
+    .project-module::before {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e6eb 100%);
+    }
+
+    .news-module::before {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .sports-module::before {
+        background: linear-gradient(135deg, #f9fafb 0%, #f0f2f5 100%);
+    }
+
+    /* 顶部轮播图和公告模块样式优化 */
+    .banner-module {
+        margin: 20px auto 40px;
+        padding: 30px 20px;
+        position: relative;
+        z-index: 3;
+        max-width: 1200px;
+
+    }
+
+    .banner-module::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e6eb 100%);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+        border-radius: 12px;
+        z-index: -1;
+        transform: rotate(0.5deg);
+    }
+
+    /* 保持轮播图和公告容器的白色背景 */
+    .carousel-container, .notice-container {
+        background-color: #fff !important;
+    }
+
+    /* 公告模块样式优化 */
+    .notice-container {
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+        padding: 15px;
+        height: 100%;
+        background-color: #fff;
+    }
+
+    .notice-item {
+        margin: 0 auto 15px;
+        width: 90%;
+        height: 1px;
+        border-bottom: 1px solid #d9d9d9;
+        position: relative;
+    }
+
+    .notice-item span {
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 30px;
+        padding: 0 15px;
+        color: rgba(160, 67, 26, 1);
+        line-height: 30px;
+        font-size: 18px;
+        background-color: #fff;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .notice-list {
+        width: 90%;
+        margin: 0 auto;
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        border-bottom: 1px dashed #d9d9d9;
+        transition: all 0.3s ease;
+    }
+
+    .notice-list:last-child {
+        border-bottom: none;
+    }
+
+    .notice-list em {
+        font-size: 18px;
+        color: rgba(160, 67, 26, 0.8);
+        margin: 0 10px;
+        min-width: 24px;
+        text-align: center;
+        font-style: normal;
+    }
+
+    .notice-list span {
+        flex: 1;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: all 0.3s ease;
+    }
+
+    .notice-list:hover {
+        background-color: rgba(245, 245, 245, 0.5);
+        transform: translateX(5px);
+    }
+
+    /* 列表项图片样式 */
+    .box .list img {
+        width: 100%;
+        height: 100px;
+        display: block;
+        margin: 0 auto;
+        object-fit: cover;
+        max-width: 100%;
+        border-radius: 4px;
+    }
+
+    .box .list .name {
+        padding-top: 5px;
+        color: rgba(160, 67, 26, 1);
+        font-size: 14px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    /* 列表项宽度设置 */
+    .box .list .list-item {
+        flex: 0 0 25%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+
+    /* 通用列布局类 */
+    .list-item1 { flex: 0 0 100%; }
+    .list-item2 { flex: 0 0 50%; }
+    .list-item3 { flex: 0 0 33.333%; }
+    .list-item4 { flex: 0 0 25%; }
+    .list-item5 { flex: 0 0 20%; }
+
+    /* 双列布局专用类 */
+    .two-col-item {
+        flex: 0 0 calc(50% - 10px);
+        box-sizing: border-box;
+    }
+
+    /* 文本行数限制 */
+    .line1 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+    }
+
+    .line2 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .line3 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+    }
+
+    /* 资讯卡片样式 */
+    .single-box {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 添加阴影效果 */
+        transition: box-shadow 0.3s ease; /* 阴影过渡效果 */
+    }
+
+    .single-box:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); /* 悬停时增强阴影 */
+    }
+
+    .single-box .part-txt {
+        position: absolute;
+        top: 0;
+        -webkit-transform: rotateY(90deg);
+        transform: rotateY(90deg);
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
+        justify-content: flex-end;
+        background: rgba(196, 209, 214, 0.85);
+        -webkit-transition: all 0.4s ease-in;
+        transition: all 0.4s ease-in;
+    }
+
+    .single-box .part-txt a {
+        font-size: 35px;
+        line-height: 100%;
+        color: #fff;
+        margin-bottom: 82px;
+        text-decoration: none;
+    }
+
+    .single-box .part-txt a:hover {
+        color: #e7b03c;
+    }
+
+    .single-box .part-txt .title {
+        background: var(--publicMainColor, orange);
+        border-radius: 10px;
+        padding: 25px 0;
+        margin: 0 20px 20px;
+    }
+
+    .single-box .part-txt .title h3 {
+        font-size: 18px;
+        line-height: 100%;
+        font-weight: 700;
+        color: #fff;
+        margin-top: -2px;
+        margin-bottom: 16px;
+    }
+
+    .single-box .part-txt .title p {
+        font-size: 14px;
+        line-height: 100%;
+        color: #e2e2e2;
+        margin-bottom: -3px;
+    }
+
+    .single-box:hover .part-txt {
+        -webkit-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+    }
+
+    .travel-gallery-wrapper {
+        padding: 0 15px;
+    }
+
+    /* 背景清理 */
+    .banner > div[style*="linear-gradient"],
+    .box > div[style*="linear-gradient"] {
+        background-image: none !important;
+        background-color: #ffffff !important;
+    }
+
+    .banner, .box, .layui-carousel, .notice-item,
+    .animation-box, .list-item-body {
+        background-image: none !important;
+        background-color: #ffffff !important;
+    }
+
+    /* 动画效果优化 */
+    .carousel-container, .notice-container {
+        transition: all 0.5s ease;
+    }
+
+    .carousel-container:hover, .notice-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    /* 轮播图初始显示样式 */
+    .carousel-initial {
+        opacity: 1;
+        display: block;
+    }
+
+    /* 响应式适配 */
+    @media (max-width: 992px) {
+        .two-col-item, .list-item3 {
+            flex: 0 0 50%;
+        }
+
+        .banner-module, .module-container {
+            padding: 15px;
+            margin: 20px 10px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .two-col-item, .list-item2, .list-item3, .list-item4 {
+            flex: 0 0 100%;
+        }
+
+        .module-title .title {
+            margin: 20px 10% 40px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .notice-list span {
+            font-size: 13px;
+        }
+
+        .title span {
+            font-size: 1.2rem;
+        }
+    }
+
+    /* 公告资讯网格布局 */
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+    }
+
+    .news-item {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+        .news-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* 项目信息卡片样式优化 - 添加阴影、移除边框 */
+    .animation-box {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        border: none !important;
+        transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+    }
+
+    .animation-box:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+        transform: translateY(-3px) !important;
+    }
+
+    /* 资讯卡片图片样式 - 移除边框 */
+    .list-item-body img {
+        border: none !important;
+    }
+
+    /* 查看更多按钮样式 - 确保无黑色边框 */
+    .more-btn {
+        border: none !important;
+        background: transparent !important;
+        cursor: pointer;
+        padding: 5px 15px;
+        font-size: 13px;
+        color: rgba(160, 67, 26, 1);
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .more-btn:hover {
+        background-color: rgba(160, 67, 26, 0.1) !important;
+    }
+</style>
+<body class="bodyClass">
+<div id="app">
+    <!-- 顶部轮播图和公告模块 -->
+    <div class="banner-module">
+        <div style="width: 1200px;margin: 0 auto;height: 370px;display: flex;justify-content: space-around;">
+            <!-- 轮播图 -->
+            <div class="carousel-container" style="width: 64%;  ">
+                <div class="layui-carousel" id="test1" style="height: 370px !important;position: relative">
+                    <div carousel-item>
+                        <div v-for="(item,index) in swiperList" :key="index" :class="{ 'carousel-initial': index === 0 }">
+                            <img style="width: 100%;height: 100%;object-fit:cover;" :src="baseUrl+item.img" alt="轮播图"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 公告资讯信息模块 -->
+            <div style="width: 23%;">
+                <div class="notice-container" style="height: 100%; ">
+                    <div class="notice-item">
+                        <span>公告资讯</span>
+                    </div>
+                    <div class="notice-app" v-for="(item,index) in newsList" v-if="index<5">
+                        <div class="notice-list" @click="jump('../news/detail.html?id='+item.id)">
+                            <em>{{index+1}}</em>
+                            <span>{{ item.newsName }}</span>
+                        </div>
+                    </div>
+                    <!-- 查看更多按钮 -->
+                    <div style="text-align: center; margin-top: 15px;">
+                        <button @click="jump('../news/list.html')" class="more-btn">
+                            查看更多 <i class="layui-icon layui-icon-right" style="font-size: 12px;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="content">
+        <!-- 项目信息展示模块 -->
+        <div class="module-container project-module">
+            <div class="module-content" style="width: 1200px; margin: 0 auto;">
+                <div class="module-title">
+                    <div class="title" :style='{"isshow":true,"padding":"10px 0 10px 0","boxShadow":"-16px -15px 31px -1px var(--publicSubColor)","margin":"20px 35% 60px 35%","borderColor":"var(--publicSubColor)","backgroundColor":"var(--publicMainColor)","color":"#fff","borderRadius":"0","alignItems":"center","borderWidth":"5px","fontSize":"28px","borderStyle":"solid"}'>
+                        <span>DATA SHOW</span>
+                        <span>项目信息展示</span>
+                    </div>
+                </div>
+
+                <div class="wow " data-wow-duration="2s" data-wow-delay="1s">
+                    <div style="display: flex;flex-wrap: wrap;justify-content: space-evenly;">
+                        <div v-if="bisaixiangmuList.length>0" class="animation-box" @click="jump('../bisaixiangmu/detail.html?id='+bisaixiangmuList[0].id)"
+                             :style='{"padding":"0","margin":"0 20px 0 0","backgroundColor":"#ccc","borderRadius":"0","width":"250px","height":"400px"}'>
+                            <img :style='{"padding":"0","margin":"0","backgroundColor":"#ccc","borderRadius":"0","width":"100%","height":"100%"}'
+                                 :src="bisaixiangmuList[0].bisaixiangmuPhoto?baseUrl+bisaixiangmuList[0].bisaixiangmuPhoto.split(',')[0]:''" alt="项目图片"/>
+                            <div style="position: relative;bottom: 50px;" :style='{"padding":"0","margin":"0","backgroundColor":"rgba(0,0,0,.3)","borderRadius":"0","width":"100%","height":"50px"}'>
+                                <div :style='{"padding":"0 6px","margin":"0","backgroundColor":"rgba(0,0,0,0)","color":"#fff","textAlign":"left","borderRadius":"0","width":"100%","lineHeight":"44px","fontSize":"14px"}'>
+                                    {{bisaixiangmuList[0].bisaixiangmuName}}
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div v-if="bisaixiangmuList.length>1" @click="jump('../bisaixiangmu/detail.html?id='+bisaixiangmuList[1].id)" class="animation-box"
+                                 :style='{"padding":"0","margin":"0 20px 20px 0","backgroundColor":"#ccc","borderRadius":"0","width":"190px","height":"190px"}'>
+                                <img :style='{"padding":"0","margin":"0","backgroundColor":"#ccc","borderRadius":"0","width":"100%","height":"100%"}'
+                                     :src="bisaixiangmuList[1].bisaixiangmuPhoto?baseUrl+bisaixiangmuList[1].bisaixiangmuPhoto.split(',')[0]:''" alt="项目图片"/>
+                                <div style="position: relative;bottom: 50px;" :style='{"padding":"0","margin":"0","backgroundColor":"rgba(0,0,0,.3)","borderRadius":"0","width":"100%","height":"50px"}'>
+                                    <div :style='{"padding":"0 6px","margin":"0","backgroundColor":"rgba(0,0,0,0)","color":"#fff","textAlign":"left","borderRadius":"0","width":"100%","lineHeight":"44px","fontSize":"14px"}'>
+                                        {{bisaixiangmuList[1].bisaixiangmuName}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="bisaixiangmuList.length>2" @click="jump('../bisaixiangmu/detail.html?id='+bisaixiangmuList[2].id)" class="animation-box"
+                                 :style='{"padding":"0","margin":"0 20px 0 0","backgroundColor":"#ccc","borderRadius":"0","width":"190px","height":"190px"}'>
+                                <img :style='{"padding":"0","margin":"0","backgroundColor":"#ccc","borderRadius":"0","width":"100%","height":"100%"}'
+                                     :src="bisaixiangmuList[2].bisaixiangmuPhoto?baseUrl+bisaixiangmuList[2].bisaixiangmuPhoto.split(',')[0]:''" alt="项目图片"/>
+                                <div style="position: relative;bottom: 50px;" :style='{"padding":"0","margin":"0","backgroundColor":"rgba(0,0,0,.3)","borderRadius":"0","width":"100%","height":"50px"}'>
+                                    <div :style='{"padding":"0 6px","margin":"0","backgroundColor":"rgba(0,0,0,0)","color":"#fff","textAlign":"left","borderRadius":"0","width":"100%","lineHeight":"44px","fontSize":"14px"}'>
+                                        {{bisaixiangmuList[2].bisaixiangmuName}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="bisaixiangmuList.length>3" class="animation-box" @click="jump('../bisaixiangmu/detail.html?id='+bisaixiangmuList[3].id)"
+                             :style='{"padding":"0","margin":"0 20px 0 0","backgroundColor":"#ccc","borderRadius":"0","width":"250px","height":"400px"}'>
+                            <img :style='{"padding":"0","margin":"0","backgroundColor":"#ccc","borderRadius":"0","width":"100%","height":"100%"}'
+                                 :src="bisaixiangmuList[3].bisaixiangmuPhoto?baseUrl+bisaixiangmuList[3].bisaixiangmuPhoto.split(',')[0]:''" alt="项目图片"/>
+                            <div style="position: relative;bottom: 50px;" :style='{"padding":"0","margin":"0","backgroundColor":"rgba(0,0,0,.3)","borderRadius":"0","width":"100%","height":"50px"}'>
+                                <div :style='{"padding":"0 6px","margin":"0","backgroundColor":"rgba(0,0,0,0)","color":"#fff","textAlign":"left","borderRadius":"0","width":"100%","lineHeight":"44px","fontSize":"14px"}'>
+                                    {{bisaixiangmuList[3].bisaixiangmuName}}
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div v-if="bisaixiangmuList.length>4" @click="jump('../bisaixiangmu/detail.html?id='+bisaixiangmuList[4].id)" class="animation-box"
+                                 :style='{"padding":"0","margin":"0 0 20px 0","backgroundColor":"#ccc","borderRadius":"0","width":"190px","height":"190px"}'>
+                                <img :style='{"padding":"0","margin":"0","backgroundColor":"#ccc","borderRadius":"0","width":"100%","height":"100%"}'
+                                     :src="bisaixiangmuList[4].bisaixiangmuPhoto?baseUrl+bisaixiangmuList[4].bisaixiangmuPhoto.split(',')[0]:''" alt="项目图片"/>
+                                <div style="position: relative;bottom: 50px;" :style='{"padding":"0","margin":"0","backgroundColor":"rgba(0,0,0,.3)","borderRadius":"0","width":"100%","height":"50px"}'>
+                                    <div :style='{"padding":"0 6px","margin":"0","backgroundColor":"rgba(0,0,0,0)","color":"#fff","textAlign":"left","borderRadius":"0","width":"100%","lineHeight":"44px","fontSize":"14px"}'>
+                                        {{bisaixiangmuList[4].bisaixiangmuName}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="bisaixiangmuList.length>5" @click="jump('../bisaixiangmu/detail.html?id='+bisaixiangmuList[5].id)" class="animation-box"
+                                 :style='{"padding":"0","margin":"0","backgroundColor":"#ccc","borderRadius":"0","width":"190px","height":"190px"}'>
+                                <img :style='{"padding":"0","margin":"0","backgroundColor":"#ccc","borderRadius":"0","width":"100%","height":"100%"}'
+                                     :src="bisaixiangmuList[5].bisaixiangmuPhoto?baseUrl+bisaixiangmuList[5].bisaixiangmuPhoto.split(',')[0]:''" alt="项目图片"/>
+                                <div style="position: relative;bottom: 50px;" :style='{"padding":"0","margin":"0","backgroundColor":"rgba(0,0,0,.3)","borderRadius":"0","width":"100%","height":"50px"}'>
+                                    <div :style='{"padding":"0 6px","margin":"0","backgroundColor":"rgba(0,0,0,0)","color":"#fff","textAlign":"left","borderRadius":"0","width":"100%","lineHeight":"44px","fontSize":"14px"}'>
+                                        {{bisaixiangmuList[5].bisaixiangmuName}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center;margin-top: 40px;">
+                        <button @click="jump('../bisaixiangmu/list.html')" class="more-btn" type="button">
+                            查看更多
+                            <i :style='{"isshow":true,"padding":"0 0 0 1px","fontSize":"14px","color":"rgba(160, 67, 26, 1)"}' class="layui-icon layui-icon-next"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 公告资讯展示模块 -->
+        <div class="module-container news-module">
+            <div class="module-content" style="width: 1200px; margin: 0 auto;">
+                <div class="module-title">
+                    <div class="title" :style='{"isshow":true,"padding":"10px 0 10px 0","boxShadow":"-16px -15px 31px -1px var(--publicSubColor)","margin":"20px 35% 60px 35%","borderColor":"var(--publicSubColor)","backgroundColor":"var(--publicMainColor)","color":"#fff","borderRadius":"0","alignItems":"center","borderWidth":"5px","fontSize":"28px","borderStyle":"solid"}'>
+                        <span>NEWS</span>
+                        <span>公告资讯展示</span>
+                    </div>
+                </div>
+
+                <div class="wow " data-wow-duration="2s" data-wow-delay="1s">
+                    <div class="news-grid" style="padding: 0 20px;">
+                        <div v-for="(item,index) in newsList" :key="index" class="news-item" @click="jump('../news/detail.html?id='+item.id)">
+                            <div style="display: flex; height: 210px; width: 100%;" class="list-item-body animation-box" :style='{"padding":"12px","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"4px"}'>
+                                <img :style='{"borderRadius":"4px","width":"170px","height":"100%","object-fit":"cover"}' :src="baseUrl+item.newsPhoto" alt="公告图片"/>
+                                <div class="item-info" style="display: flex;flex-direction: column;justify-content: space-between; padding-left: 15px; flex: 1;">
+                                    <div :style='{"isshow":true,"padding":"0","margin":"5px 0","backgroundColor":"rgba(0,0,0,0)","color":"rgba(160, 67, 26, 1)","borderRadius":"0","textAlign":"left","fontSize":"16px","fontWeight":"500"}' class="name line2">
+                                        {{item.newsName}}
+                                    </div>
+                                    <div :style='{"padding":"0","margin":"0","backgroundColor":"rgba(0,0,0,0)","color":"#999","borderRadius":"0","textAlign":"left","fontSize":"13px"}' class="time">
+                                        {{item.insertTime}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:40px;text-align: center;">
+                        <button @click="jump('../news/list.html')" class="more-btn" type="button">
+                            查看更多
+                            <i :style='{"isshow":true,"padding":"0 0 0 1px","fontSize":"14px","color":"rgba(160, 67, 26, 1)"}' class="layui-icon layui-icon-next"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 运动会资讯展示模块 -->
+        <div class="module-container sports-module">
+            <div class="module-content" style="width: 1200px; margin: 0 auto;">
+                <div class="module-title">
+                    <div class="title" :style='{"isshow":true,"padding":"10px 0 10px 0","boxShadow":"-16px -15px 31px -1px var(--publicSubColor)","margin":"20px 35% 60px 35%","borderColor":"var(--publicSubColor)","backgroundColor":"var(--publicMainColor)","color":"#fff","borderRadius":"0","alignItems":"center","borderWidth":"5px","fontSize":"28px","borderStyle":"solid"}'>
+                        <span>DATA SHOW</span>
+                        <span>运动会资讯展示</span>
+                    </div>
+                </div>
+
+                <div class="wow " data-wow-duration="2s" data-wow-delay="1s">
+                    <div class="travel-gallery-wrapper">
+                        <div class="row" style="justify-content: space-evenly;">
+                            <div v-for="(item,index) in zixunList" v-bind:key="index"
+                                 class="col-lg-3 list-item3B list-item4 single-box" style="max-width: 100%;margin: 8px 0">
+                                <div @click="jumpCheck('../zixun/detail.html?id='+item.id , item.aaaaaaaaaa == null?'':item.aaaaaaaaaa , item.shangxiaTypes == null?'':item.shangxiaTypes)">
+                                    <div class="part-img">
+                                        <img :src="item.zixunPhoto?baseUrl+item.zixunPhoto.split(',')[0]:''" style="height: 300px;width:100%;" alt="运动会资讯图片"/>
+                                    </div>
+                                    <div class="part-txt">
+                                        <a href="javascript:return false;" style="font-size: 24px"><i class="layui-icon layui-icon-link"></i></a>
+
+                                        <div class="title">
+                                            <h3>{{item.zixunName}}</h3>
+                                            <p v-if="item.zixunNewMoney">
+                                                {{item.zixunNewMoney}} RMB
+                                            </p>
+                                            <p v-else>
+                                                {{item.zixunValue}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center;margin-top: 40px;">
+                        <button @click="jump('../zixun/list.html')" class="more-btn" type="button">
+                            查看更多
+                            <i :style='{"isshow":true,"padding":"0 0 0 1px","fontSize":"14px","color":"rgba(160, 67, 26, 1)"}' class="layui-icon layui-icon-next"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../xznstatic/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../xznstatic/js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入element样式 -->
+<link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+<script src="../../xznstatic/js/swiper.min.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+<script src="../../xznstatic/js/wow.min.js"></script>
+<script type="text/javascript">
+    // 动画效果
+    new WOW().init();
+
+    Vue.prototype.myFilters = function (msg) {
+        if(msg==null || msg==""){
+            return "";
+        }else if (msg.length>20){
+            msg.replace(/\n/g, "<br>");
+            return msg.substring(0,20)+"......";
+        }else{
+            return msg.replace(/\n/g, "<br>");
+        }
+    };
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            swiperList: [],
+            baseUrl:"",
+            newsList: [],
+            newsTypesList: [],
+            zixunList: [],
+            zixunTypesList: [],
+            bisaixiangmuList: [],
+            bisaixiangmuTypesList: [],
+            //类型查询条件
+            newsTypes: "",
+            zixunTypes: "",
+            bisaixiangmuTypes: "",
+            carouselIns: null // 轮播实例
+        },
+        methods: {
+            jump(url) {
+                jump(url)
+            }
+            , jumpCheck(url, check1, check2) {
+                if (check1 == "2" || check1 == 2) {
+                    layui.layer.msg("已经被删除", {
+                        time: 2000,
+                        icon: 2
+                    });
+                    return false;
+                }
+                if (check2 == "2" || check2 == 2) {
+                    layui.layer.msg("已经下架", {
+                        time: 2000,
+                        icon: 2
+                    });
+                    return false;
+                }
+                this.jump(url);
+            }
+        }
+    });
+
+    layui.use(['layer', 'form', 'element', 'carousel', 'http', 'jquery'], function () {
+        var layer = layui.layer;
+        var element = layui.element;
+        var form = layui.form;
+        var carousel = layui.carousel;
+        var http = layui.http;
+        var jquery = layui.jquery;
+        vue.baseUrl = http.baseurl
+
+        localStorage.setItem("goUtl","./pages/home/home.html")
+
+        // 获取轮播图数据
+        http.request('config/list', 'get', {
+            page: 1,
+            limit: 5
+        }, function (res) {
+            if (res.data.list.length > 0) {
+                let swiperList = [];
+                res.data.list.forEach(element => {
+                    if (element.value != null) {
+                        swiperList.push({
+                            img: element.value
+                        });
+                    }
+                });
+
+                vue.swiperList = swiperList;
+
+                vue.$nextTick(() => {
+                    // 初始化轮播，设置自动轮播
+                    vue.carouselIns = carousel.render({
+                        elem: '#test1',
+                        width: '100%',
+                        height: '100%',
+                        arrow: 'hover',
+                        anim: 'left',  // 轮播动画为左右滑动
+                        autoplay: true,  // 默认自动轮播
+                        interval: '3000',  // 轮播间隔3秒
+                        indicator: 'inside',
+                        index: 0  // 强制显示第一张图
+                    });
+                })
+            }
+        });
+
+        newsSelect();
+        $(document).on("click", ".newsTypes-search", function(e) {
+            vue.newsTypes = $(this).attr('index');
+            newsSelect();
+        });
+        newsTypesSelect();
+        zixunSelect();
+        $(document).on("click", ".zixunTypes-search", function(e) {
+            vue.zixunTypes = $(this).attr('index');
+            zixunSelect();
+        });
+        zixunTypesSelect();
+        bisaixiangmuSelect();
+        $(document).on("click", ".bisaixiangmuTypes-search", function(e) {
+            vue.bisaixiangmuTypes = $(this).attr('index');
+            bisaixiangmuSelect();
+        });
+        bisaixiangmuTypesSelect();
+
+        function newsTypesSelect() {
+            http.request("dictionary/page?page=1&limit=100&sort=&order=&dicCode=news_types",'get',{},function(res) {
+                if (res.code == 0) {vue.newsTypesList = res.data.list;}
+            });
+        }
+        function newsSelect(){
+            http.request('news/list', 'get', {
+                page: 1,
+                limit: 8,
+                newsTypes: vue.newsTypes,
+                order: "desc",
+            },function (res) {
+                vue.newsList = res.data.list;
+            })
+        };
+        function zixunTypesSelect() {
+            http.request("dictionary/page?page=1&limit=100&sort=&order=&dicCode=zixun_types",'get',{},function(res) {
+                if (res.code == 0) {vue.zixunTypesList = res.data.list;}
+            });
+        }
+        function zixunSelect(){
+            http.request('zixun/gexingtuijian', 'get', {
+                page: 1,
+                limit: 8,
+                sort: "zixun_clicknum",
+                zixunDelete: 1,
+                zixunTypes: vue.zixunTypes,
+                order: "desc",
+            },function (res) {
+                vue.zixunList = res.data.list;
+            })
+        };
+        function bisaixiangmuTypesSelect() {
+            http.request("dictionary/page?page=1&limit=100&sort=&order=&dicCode=bisaixiangmu_types",'get',{},function(res) {
+                if (res.code == 0) {vue.bisaixiangmuTypesList = res.data.list;}
+            });
+        }
+        function bisaixiangmuSelect(){
+            http.request('bisaixiangmu/list', 'get', {
+                page: 1,
+                limit: 8,
+                bisaixiangmuDelete: 1,
+                bisaixiangmuTypes: vue.bisaixiangmuTypes,
+                order: "desc",
+            },function (res) {
+                vue.bisaixiangmuList = res.data.list;
+            })
+        };
+
+    });
+
+    window.xznSlide = function () {
+        jQuery("#ifocus").slide({
+            titCell: "#ifocus_btn li",
+            mainCell: "#ifocus_piclist ul",
+            effect: "leftLoop",
+            delayTime: 200,
+            autoPlay: true,
+            triggerTime: 0
+        });
+        jQuery("#ifocus").slide({titCell: "#ifocus_btn li", mainCell: "#ifocus_tx ul", delayTime: 0, autoPlay: true});
+        jQuery(".product_list").slide({
+            mainCell: ".bd ul",
+            autoPage: true,
+            effect: "leftLoop",
+            autoPlay: true,
+            vis: 5,
+            trigger: "click",
+            interTime: 4000
+        });
+    };
+</script>
+<script src="../../xznstatic/js/index.js"></script>
+</body>
+</html>

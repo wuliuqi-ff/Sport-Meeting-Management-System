@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <title>项目信息</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <script type="text/javascript" src="../../xznstatic/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../../xznstatic/js/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/theme.css"/>
+</head>
+<style>
+    /* 基础样式重置与统一 */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        background-color: #f5f7fa;
+        line-height: 1.6;
+        padding: 20px 0;
+    }
+    #app {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    /* 容器与标题优化 */
+    .recommend {
+        padding: 20px 0;
+        background-color: transparent;
+    }
+    .recommend .box {
+        width: 100%;
+    }
+    .recommend .box > div {
+        width: 100% !important;
+    }
+
+    /* 标题区域样式 */
+    .title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px !important;
+        margin: 0 0 20px !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .title span:first-child {
+        font-size: 20px !important;
+        font-weight: 600;
+        color: #fff !important;
+        padding: 0 10px !important;
+    }
+    .title span:last-child {
+        font-size: 14px !important;
+        color: #666 !important;
+        padding: 0 10px !important;
+    }
+
+    /* 类型筛选按钮优化 */
+    .type-filter-container {
+        padding: 10px 0;
+        margin-bottom: 15px;
+    }
+    .thisTableType-search {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 0 15px !important;
+        margin: 0 8px 10px 0 !important;
+        line-height: 36px !important;
+        border-radius: 18px !important;
+        font-size: 14px !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .thisTableType-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    /* 搜索区域优化 */
+    .filter {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 15px 20px !important;
+        margin: 0 0 25px !important;
+        border-radius: 8px !important;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .filter .item-list {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .filter .lable {
+        font-size: 15px !important;
+        color: #666 !important;
+        white-space: nowrap;
+    }
+    .filter input {
+        width: 200px !important;
+        height: 40px !important;
+        padding: 0 15px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 6px !important;
+        transition: all 0.3s ease;
+        color: #333 !important;
+    }
+    .filter input:focus {
+        border-color: #87cefa !important;
+        box-shadow: 0 0 0 2px rgba(135, 206, 250, 0.3);
+        outline: none;
+    }
+    .filter button {
+        height: 40px !important;
+        padding: 0 15px !important;
+        border-radius: 6px !important;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    .filter button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* 项目列表优化 */
+    .travel-gallery-wrapper {
+        margin-bottom: 30px;
+    }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -10px;
+        justify-content: center !important;
+    }
+    .single-box {
+        padding: 0 10px !important;
+        margin-bottom: 25px !important;
+        flex: 0 0 25% !important;
+        max-width: 25% !important;
+    }
+    .single-box > div {
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .single-box > div:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .part-img {
+        position: relative;
+        overflow: hidden;
+    }
+    .part-img img {
+        width: 100% !important;
+        height: 220px !important;
+        object-fit: cover;
+        transition: all 0.5s ease;
+    }
+    .single-box > div:hover .part-img img {
+        transform: scale(1.05);
+    }
+    .part-txt {
+        padding: 15px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .part-txt a {
+        color: #87cefa;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+    .part-txt a:hover {
+        color: #1e90ff;
+    }
+    .title h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .title p {
+        color: #e74c3c;
+        font-weight: 500;
+        margin-top: auto;
+    }
+
+    /* 分页优化 */
+    .pager {
+        padding: 20px 0;
+        text-align: center;
+    }
+    .layui-laypage {
+        display: inline-flex;
+        align-items: center;
+    }
+    .layui-laypage a, .layui-laypage span {
+        border-radius: 4px;
+        margin: 0 3px;
+    }
+    .layui-laypage a:hover {
+        color: #87cefa;
+        border-color: #87cefa;
+    }
+    .layui-laypage .layui-laypage-curr .layui-laypage-em {
+        background-color: #87cefa;
+        border-radius: 4px;
+    }
+
+    /* 空状态样式 */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    .empty-state i {
+        font-size: 48px;
+        color: #ddd;
+        margin-bottom: 15px;
+    }
+    .empty-state p {
+        color: #999;
+        font-size: 16px;
+    }
+
+    /* 响应式优化 */
+    @media (max-width: 1024px) {
+        .single-box {
+            flex: 0 0 33.333% !important;
+            max-width: 33.333% !important;
+        }
+    }
+    @media (max-width: 768px) {
+        .single-box {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+        }
+        .filter {
+            justify-content: flex-start;
+        }
+        .filter input {
+            width: 100% !important;
+        }
+        .filter button {
+            width: 100%;
+            margin: 5px 0 0 0 !important;
+        }
+        .part-img img {
+            height: 180px !important;
+        }
+    }
+    @media (max-width: 576px) {
+        .single-box {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+        }
+        .title {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        .thisTableType-search {
+            padding: 0 12px !important;
+            font-size: 13px !important;
+        }
+    }
+</style>
+<body class='bodyClass'>
+<div id="app">
+    <el-dialog title="弹出内容" :visible.sync="showContentModal" :modal-append-to-body="false">
+        <div class="content" style="word-break: break-all;" v-html="showContent">
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="showContentModal = false">关 闭</el-button>
+        </div>
+    </el-dialog>
+
+    <div class="recommend index-pv1">
+        <div class="box">
+            <div>
+                <!-- 类型筛选 -->
+                <div class="type-filter-container">
+                    <div class="thisTableType-search main_backgroundColor" index=""
+                         :style='searchForm.bisaixiangmuTypes=="" || searchForm.bisaixiangmuTypes==null?{"color":"#fff"}:{"backgroundColor":"#fff","color":"#333"}'>
+                        项目类型全部
+                    </div>
+                    <div v-for="(item,index) in bisaixiangmuTypesList" :key="item.codeIndex"
+                         class="thisTableType-search main_backgroundColor" :index="item.codeIndex"
+                         :style='searchForm.bisaixiangmuTypes==item.codeIndex?{"color":"#fff"}:{"backgroundColor":"#fff","color":"#333"}'>
+                        {{item.indexName}}
+                    </div>
+                </div>
+
+                <!-- 标题区域 -->
+                <div class="title sub_backgroundColor sub_borderColor">
+                    <span>项目信息</span>
+                    <span>您现在的位置：项目信息</span>
+                </div>
+
+                <!-- 搜索区域 -->
+                <form class="layui-form filter main_backgroundColor">
+                    <div class="item-list">
+                        <div class="lable">项目标题</div>
+                        <input type="text" v-model="searchForm.bisaixiangmuName"
+                               placeholder="项目标题"
+                               autocomplete="off"
+                               class="layui-input">
+                    </div>
+                    <button id="btn-search"
+                            type="button" class="layui-btn layui-btn-normal sub_backgroundColor">
+                        <i class="layui-icon layui-icon-search"></i>搜索
+                    </button>
+                    <button v-if="isAuth('bisaixiangmu','新增')"
+                            @click="jump('../bisaixiangmu/add.html')"
+                            type="button" class="layui-btn btn-theme">
+                        <i class="layui-icon">&#xe654;</i>添加
+                    </button>
+                </form>
+
+                <!-- 项目列表 -->
+                <div v-if="dataList.length > 0" class="travel-gallery-wrapper">
+                    <div class="row">
+                        <div v-for="(item,index) in dataList" :key="index"
+                             class="col-lg-3 list-item3B list-item4 single-box">
+                            <div @click="jumpCheck('../bisaixiangmu/detail.html?id='+item.id , item.aaaaaaaaaa == null?'':item.aaaaaaaaaa , item.shangxiaTypes == null?'':item.shangxiaTypes)">
+                                <div class="part-img">
+                                    <img :src="item.bisaixiangmuPhoto?baseUrl+item.bisaixiangmuPhoto.split(',')[0]:'../../xznstatic/img/default.png'" alt="{{item.bisaixiangmuName}}">
+                                </div>
+                                <div class="part-txt">
+                                    <a href="javascript:return false;" style="font-size: 24px"><i class="layui-icon layui-icon-link"></i></a>
+                                    <div class="title">
+                                        <h3>{{item.bisaixiangmuName}}</h3>
+                                        <p v-if="item.bisaixiangmuNewMoney">
+                                            {{item.bisaixiangmuNewMoney}} RMB
+                                        </p>
+                                        <p v-else>
+                                            {{item.bisaixiangmuValue}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 空状态 -->
+                <div v-else class="empty-state">
+                    <i class="layui-icon layui-icon-folder"></i>
+                    <p>暂无相关项目信息</p>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pager" id="pager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../xznstatic/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../xznstatic/js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../layui/layui.js"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入element样式 -->
+<link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+
+<script type="text/javascript">
+    Vue.prototype.myFilters = function (msg) {
+        if(!msg) return "";
+        let text = msg.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ');
+        return text.length > 80 ? text.substring(0, 80) + "......" : text;
+    };
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            userId: localStorage.getItem("userid"),
+            sessionTable: localStorage.getItem("userTable"),
+            role: localStorage.getItem("role"),
+            user:{},
+            centerMenu: centerMenu,
+            baseUrl:"",
+            showContentModal: false,
+            showContent: "",
+            bisaixiangmuTypesList: [],
+            searchForm: {
+                page: 1,
+                limit: 8,
+                sort: "id",
+                order: "desc",
+                bisaixiangmuDelete: 1,
+                bisaixiangmuName: "",
+                bisaixiangmuPhoto: "",
+                bisaixiangmuShijian: "",
+                bisaixiangmuFuzhenr: "",
+                bisaixiangmuPhone: "",
+                bisaixiangmuTypes: "",
+                bisaixiangmuContent: ""
+            },
+            dataList: []
+        },
+        filters: {
+            subString: function(val) {
+                if (!val) return '';
+                val = val.replace(/<[^<>]+>/g, '').replace(/undefined/g, '');
+                return val.length > 60 ? val.substring(0, 60) + '...' : val;
+            }
+        },
+        methods: {
+            isAuth(tablename, button) {
+                return isFrontAuth(tablename, button);
+            },
+            jump(url) {
+                jump(url);
+            },
+            jumpCheck(url,check1,check2) {
+                if(check1 == "2" || check1 == 2){
+                    layui.layer.msg("已经被删除", {time: 2000, icon: 2});
+                    return false;
+                }
+                if(check2 == "2"  || check2 == 2){
+                    layui.layer.msg("已经下架", {time: 2000, icon: 2});
+                    return false;
+                }
+                this.jump(url);
+            },
+            showContentFunction(content) {
+                this.showContentModal = true;
+                this.showContent = content.replaceAll("src=\"upload/","src=\""+this.baseUrl+"upload/");
+            },
+            deleteData(data){
+                var mymessage = confirm("确定要删除这条数据吗？");
+                if(!mymessage) return false;
+
+                layui.http.requestJson(`bisaixiangmu/delete`, 'post', [data.id], (res) => {
+                    if(res.code == 0){
+                        layer.msg('操作成功', {time: 2000, icon: 6});
+                        window.location.reload();
+                    }else{
+                        layer.msg(res.msg, {time: 2000, icon: 2});
+                    }
+                });
+            }
+        }
+    });
+
+    layui.use(['layer', 'element', 'carousel', 'laypage', 'http', 'jquery', 'laydate', 'tinymce'], function() {
+        var layer = layui.layer;
+        var element = layui.element;
+        var carousel = layui.carousel;
+        var laypage = layui.laypage;
+        var http = layui.http;
+        var laydate = layui.laydate;
+        var tinymce = layui.tinymce;
+        window.jQuery = window.$ = jquery = layui.jquery;
+
+        localStorage.setItem("goUtl", "./pages/bisaixiangmu/list.html");
+        vue.baseUrl = http.baseurl;
+
+        // 获取用户信息
+        let table = localStorage.getItem("userTable");
+        if(table){
+            http.request(table+"/session", 'get', {}, function (data) {
+                vue.user = data.data;
+            });
+        }
+
+        // 项目类型筛选点击事件
+        $(document).on("click", ".thisTableType-search", function (e) {
+            vue.searchForm.bisaixiangmuTypes = $(this).attr('index');
+            pageList();
+        });
+
+        // 加载项目类型字典
+        function bisaixiangmuTypesSelect() {
+            http.request("dictionary/page?page=1&limit=100&sort=&order=&dicCode=bisaixiangmu_types", 'get', {}, function (res) {
+                if(res.code == 0){
+                    vue.bisaixiangmuTypesList = res.data.list;
+                }
+            });
+        }
+        bisaixiangmuTypesSelect();
+
+        // 分页列表查询
+        function pageList() {
+            http.request('bisaixiangmu/list', 'get', vue.searchForm, function (res) {
+                vue.dataList = res.data.list;
+                // 渲染分页
+                laypage.render({
+                    elem: 'pager',
+                    count: res.data.total,
+                    limit: vue.searchForm.limit,
+                    groups: 3,
+                    layout: ["prev", "page", "next"],
+                    jump: function (obj, first) {
+                        vue.searchForm.page = obj.curr;
+                        if (!first) {
+                            http.request('bisaixiangmu/list', 'get', vue.searchForm, function (res1) {
+                                vue.dataList = res1.data.list;
+                            });
+                        }
+                    }
+                });
+            });
+        }
+        pageList();
+
+        // 搜索按钮点击事件
+        jquery('#btn-search').click(function (e) {
+            pageList();
+        });
+
+        // 初始化轮播
+        window.xznSlide = function () {
+            jQuery(".banner").slide({mainCell: ".bd ul", autoPlay: true, interTime: 5000});
+            jQuery("#ifocus").slide({
+                titCell: "#ifocus_btn li",
+                mainCell: "#ifocus_piclist ul",
+                effect: "leftLoop",
+                delayTime: 200,
+                autoPlay: true,
+                triggerTime: 0
+            });
+            jQuery("#ifocus").slide({titCell: "#ifocus_btn li", mainCell: "#ifocus_tx ul", delayTime: 0, autoPlay: true});
+            jQuery(".product_list").slide({
+                mainCell: ".bd ul",
+                autoPage: true,
+                effect: "leftLoop",
+                autoPlay: true,
+                vis: 5,
+                trigger: "click",
+                interTime: 4000
+            });
+        };
+    });
+</script>
+</body>
+</html>

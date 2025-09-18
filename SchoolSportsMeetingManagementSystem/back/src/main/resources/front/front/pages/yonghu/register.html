@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>注册</title>
+    <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="../../xznstatic/css/public.css" />
+    <link rel="stylesheet" type="text/css" href="../../xznstatic/css/login.css" />
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <!-- 新增：毛玻璃 + 样式统一调整 -->
+    <style>
+        /* 页面布局与背景 */
+        .register {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100vh;
+          /* 改为视口高度，确保全屏 */
+          background-attachment: fixed;
+          background-size: cover;
+          background-position: center;
+          background-image: url(/xiaoyunhuiguanli/img/fbg.jpg);
+        }
+
+        /* 表单容器：毛玻璃 + 无边框 + 直角 */
+        .login-form {
+          box-sizing: border-box;
+          min-height: 400px;
+          padding: 15px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          box-shadow: 0 0 6px rgba(255, 0, 0, .1);
+          /* 毛玻璃核心 */
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          background-color: rgba(255, 255, 255, 0.2);
+          /* 半透明增强毛玻璃 */
+          border: none !important;
+          /* 强制无边框 */
+          border-radius: 0;
+          /* 直角 */
+          width: 500px;
+          height: 600px;
+        }
+
+        /* 粘性标题栏（与毛玻璃融合，统一透明度） */
+        .login-form>div:first-child {
+          position: sticky;
+          top: 0;
+          height: 40px;
+          background-color: rgba(255, 255, 255, 0.2);
+          /* 同表单容器透明 */
+        }
+
+        /* 标题样式优化 */
+        .title {
+          margin: 10px auto;
+          padding: 0 10px;
+          width: 110px;
+          line-height: 32px;
+          font-size: 17px;
+          text-align: center;
+          color: #5e30d8;
+          border-radius: 8px;
+          background-color: transparent;
+          /* 去掉背景色，融入毛玻璃 */
+        }
+
+        /* 滚动区域与滚动条（隐藏滚动条） */
+        .zhuce {
+          display: inline-block;
+          overflow-x: hidden;
+          overflow-y: scroll;
+          /* 新增：隐藏滚动条 */
+          scrollbar-width: none;
+          /* Firefox */
+          -ms-overflow-style: none;
+          /* IE 10+ */
+        }
+
+        /* 新增：隐藏 Chrome/Safari 滚动条 */
+        .zhuce::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* 表单元素：无边框 + 毛玻璃融合 */
+        .form-item {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          box-sizing: border-box;
+          margin: 0 auto 16px;
+          width: 80%;
+          height: 64px;
+          border-bottom: 1px solid rgba(0, 0, 0, 1);
+          /* 保留底部分割线（可按需删除） */
+        }
+
+        .form-item input,
+        .form-item select,
+        .form-label {
+          box-sizing: border-box;
+          border: none !important;
+          /* 强制无边框 */
+          border-radius: 0;
+          /* 直角 */
+          background-color: #fff;
+          color: rgba(59, 46, 126, 1);
+          box-shadow: 0 0 6px #5e30d8;
+          /* 阴影颜色改为 #5e30d8 */
+        }
+
+        /* 注册按钮：颜色 #5e30d8 + 无边框 + 直角 */
+        .btn-submit {
+          display: block;
+          width: 280px;
+          height: 44px;
+          margin: 10px auto;
+          border: none !important;
+          /* 强制无边框 */
+          border-radius: 0;
+          /* 直角 */
+          background-color: #5e30d8 !important;
+          /* 按钮颜色 */
+          color: #fff;
+          font-size: 14px;
+          box-shadow: 0 0 6px #5e30d8;
+          /* 阴影同按钮色 */
+          cursor: pointer;
+        }
+
+        /* 返回按钮位置 */
+        .returnPosition {
+          text-align: center;
+          font-size: 12px;
+          color: rgba(59, 46, 126, 1);
+        }
+
+        .returnPosition a {
+          color: inherit;
+          text-decoration: none;
+        }
+
+        .returnPosition a:hover {
+          text-decoration: underline;
+        }
+
+        /* 底部操作区（统一透明度） */
+        .login-form>div:last-child {
+          position: sticky;
+          bottom: 0;
+          height: 80px;
+          padding-top: 10px;
+          background-color: rgba(255, 255, 255, 0.2);
+          /* 同表单容器透明 */
+        }
+
+        /* 修复Layui默认样式冲突 */
+        .layui-unselect {
+          margin-left: -5px;
+          margin-top: 3px;
+          border: 0;
+        }
+    </style>
+</head>
+
+<body>
+<div class="register" id="app">
+    <form class="layui-form login-form" lay-filter="myForm">
+        <!-- 粘性标题栏（毛玻璃背景，统一透明度） -->
+        <div style="position: sticky; top: 0; height: 40px; background-color: rgba(255, 255, 255, 0.2);">
+            <p class="title" v-if="true">用户注册</p>
+        </div>
+
+        <!-- 滚动表单区域（已隐藏滚动条） -->
+        <div class="zhuce">
+            <!-- 账户 -->
+            <div class="form-item layui-form-text inpotdivBackGround">
+                <label v-if="false" class="form-label">账户：</label>
+                <input lay-verify="required" type="text" name="username" placeholder="请输入账户" autocomplete="off"
+                       class="layui-input">
+            </div>
+            <!-- 密码 -->
+            <div class="form-item layui-form-text inpotdivBackGround">
+                <label v-if="false" class="form-label">密码：</label>
+                <input lay-verify="password1|required" type="password" name="password" placeholder="请输入密码"
+                       class="layui-input">
+            </div>
+            <!-- 确认密码 -->
+            <div class="form-item layui-form-text inpotdivBackGround">
+                <label v-if="false" class="form-label">密码：</label>
+                <input lay-verify="password2|required" type="password" name="password2" placeholder="请重复输入密码"
+                       class="layui-input">
+            </div>
+            <!-- 用户名 -->
+            <div class="form-item layui-form-text inpotdivBackGround">
+                <label v-if="false" class="form-label">用户名称：</label>
+                <input lay-verify="required" type="text" name="yonghuName" placeholder="请输入用户名称" autocomplete="off"
+                       class="layui-input">
+            </div>
+            <!-- 手机号 -->
+            <div class="form-item layui-form-text inpotdivBackGround">
+                <label v-if="false" class="form-label">用户手机号：</label>
+                <input lay-verify="phone|required" type="text" name="yonghuPhone" placeholder="请输入用户手机号"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <!-- 身份证号 -->
+            <div class="form-item layui-form-text inpotdivBackGround">
+                <label v-if="false" class="form-label">用户身份证号：</label>
+                <input lay-verify="identity|required" type="text" name="yonghuIdNumber" placeholder="请输入用户身份证号"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <!-- 性别 -->
+            <div class="form-item layui-form-text inpotdivBackGround">
+                &nbsp;&nbsp;&nbsp;
+                <select name="sexTypes" id="sexTypes">
+                    <option v-for="(item,index) in sexTypesList" :value="item.codeIndex" :key="item.codeIndex">{{
+                        item.indexName }}</option>
+                </select>
+            </div>
+            <!-- 邮箱 -->
+            <div class="form-item layui-form-text inpotdivBackGround">
+                <label v-if="false" class="form-label">用户邮箱：</label>
+                <input lay-verify="email|required" type="text" name="yonghuEmail" placeholder="请输入用户邮箱"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <!-- 底部操作区（统一透明度） -->
+        <div style="position: sticky; bottom: 0; height: 80px; padding-top: 10px; background-color: rgba(255, 255, 255, 0.2);">
+            <button class="layui-btn btn-submit" lay-submit lay-filter="register">注册</button>
+            <p class="returnPosition"><a href="javascript:window.location.href='../login/login.html'">已有账号登录</a></p>
+        </div>
+    </form>
+</div>
+
+<script src="../../layui/layui.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../xznstatic/js/element.min.js"></script>
+<link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+<script src="../../js/validate.js"></script>
+
+<script>
+    var vue = new Vue({
+      el: '#app',
+      data: {
+        sexTypesList: [],
+      },
+      updated: function () {
+        layui.form.render(null, 'myForm');
+      },
+      methods: {
+        jump(url) {
+          jump(url);
+        },
+      }
+    });
+
+    layui.use(['layer', 'element', 'form', 'http', 'jquery'], function () {
+      var layer = layui.layer;
+      var element = layui.element;
+      var form = layui.form;
+      var http = layui.http;
+      var $ = layui.jquery;
+
+      var tablename = http.getParam('tablename');
+
+      // 性别字典初始化
+      function sexTypesSelect() {
+        http.request(
+          "dictionary/page?page=1&limit=100&sort=&order=&dicCode=sex_types",
+          'GET',
+          {},
+          (res) => {
+            if (res.code == 0) {
+              vue.sexTypesList = res.data.list;
+            }
+          }
+        );
+      }
+      sexTypesSelect();
+
+      // 表单校验
+      form.verify({
+        integer: [/^[1-9][0-9]*$/, '必须是正整数'],
+        double: [/^[1-9][0-9]{0,5}(\.[0-9]{1,2})?$/, '最大整数位为6位,小数最大两位'],
+        password1: function (value) {
+          var p2 = $('#password2').val();
+          if (p2 && value !== p2) return '两次密码不一致';
+        },
+        password2: function (value) {
+          var p1 = $('#password').val();
+          if (p1 && value !== p1) return '两次密码不一致';
+        }
+      });
+
+      // 注册提交
+      form.on('submit(register)', function (data) {
+        http.requestJson(
+          tablename + '/register',
+          'post',
+          data.field,
+          (res) => {
+            if (res.code == 0) {
+              layer.msg('注册成功', {
+                time: 2000,
+                icon: 6
+              }, function () {
+                window.location.href = '../login/login.html';
+              });
+            } else {
+              layer.msg(res.msg, {
+                time: 4000,
+                icon: 5
+              });
+            }
+          }
+        );
+        return false;
+      });
+    });
+</script>
+</body>
+
+</html>

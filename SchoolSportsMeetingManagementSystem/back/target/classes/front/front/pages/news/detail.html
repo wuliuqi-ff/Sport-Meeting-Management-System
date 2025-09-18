@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>公告资讯详情页</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <!-- 样式 -->
+    <link rel="stylesheet" href="../../css/style.css"/>
+    <!-- 主题（主要颜色设置） -->
+    <link rel="stylesheet" href="../../css/theme.css"/>
+    <!-- 通用的css -->
+    <link rel="stylesheet" href="../../css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css">
+</head>
+<style>
+    /* 基础样式统一 */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        background-color: #f5f7fa;
+        padding: 20px 0;
+        line-height: 1.6;
+    }
+    #app {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    /* 标题区域优化 */
+    .index-title {
+        text-align: center;
+        box-sizing: border-box;
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 15px 20px !important;
+        margin: 0 auto 25px !important;
+        border-radius: 6px !important;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1) !important;
+    }
+    .index-title span:first-child {
+        font-size: 14px;
+        margin-bottom: 5px;
+        opacity: 0.9;
+    }
+    .index-title span:last-child {
+        font-size: 22px;
+        font-weight: 600;
+    }
+
+    /* 新闻容器样式 */
+    .news-container {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
+
+    /* 文章标题样式 */
+    .news-container .title {
+        font-size: 24px;
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* 发布信息样式 */
+    .auth-container {
+        text-align: center;
+        color: #909399;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    /* 图片容器样式 */
+    .news-container .img-container {
+        width: 100%;
+        margin: 0 auto 30px;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .news-container .img-container img {
+        width: 100%;
+        height: auto;
+        transition: all 0.3s ease;
+    }
+    .news-container .img-container:hover img {
+        transform: scale(1.01);
+    }
+
+    /* 内容区域样式 */
+    .news-container .content {
+        margin: 30px auto;
+        color: #303133;
+        font-size: 16px;
+        line-height: 1.8;
+    }
+    .news-container .content p {
+        margin-bottom: 15px;
+    }
+    .news-container .content img {
+        max-width: 100%;
+        height: auto;
+        margin: 15px auto;
+        display: block;
+        border-radius: 4px;
+    }
+
+    /* 按钮区域样式 */
+    .btn-container {
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        width: 100% !important;
+        margin: 25px auto 0 !important;
+        justify-content: space-between !important;
+        padding: 15px 20px !important;
+        background-color: #f9f9f9;
+        border-radius: 6px;
+        border-top: 1px solid #f0f0f0;
+    }
+    .btn-container .title {
+        font-size: 14px !important;
+        color: #606266 !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .btn-container button {
+        height: 40px !important;
+        padding: 0 15px !important;
+        border-radius: 6px !important;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 14px;
+         border: none !important;
+    }
+    .btn-container button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .btn-container button i {
+        margin-right: 4px;
+    }
+
+    /* 响应式优化 */
+    @media (max-width: 768px) {
+        .news-container {
+            padding: 20px 15px;
+        }
+        .news-container .title {
+            font-size: 20px;
+        }
+        .index-title span:last-child {
+            font-size: 18px;
+        }
+        .btn-container {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+        .btn-container .title {
+            order: 2;
+        }
+        .btn-container button {
+            order: 1;
+            width: 100%;
+        }
+    }
+</style>
+<body>
+
+<div id="app">
+    <div class="index-title sub_backgroundColor" :style='{"color":"rgba(255, 255, 255, 1)"}'>
+        <span>NEWS / INFORMATION</span>
+        <span>公告资讯</span>
+    </div>
+
+    <div class="news-container">
+        <h1 class="title">{{detail.newsName}}</h1>
+        <div class="auth-container">
+            时间：{{detail.insertTime}}
+        </div>
+        <div class="img-container">
+            <img :src="baseUrl+detail.newsPhoto" :alt="detail.newsName">
+        </div>
+        <div class="content" style="word-break: break-all;" v-html="myFilters(detail.newsContent)">
+        </div>
+        <div class="btn-container">
+            <div class="title">
+                本篇文章：{{detail.newsName || '无标题'}}
+            </div>
+            <button class="main_backgroundColor" onclick="back()" type="button" class="layui-btn layui-btn-lg btn-theme">
+                <i class="layui-icon">&#xe65c;</i> 返回列表
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script src="../../layui/layui.js"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入element样式 -->
+<link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+<!-- 组件配置信息 -->
+<script src="../../js/config.js"></script>
+<!-- 扩展插件配置信息 -->
+<script src="../../modules/config.js"></script>
+<!-- 工具方法 -->
+<script src="../../js/utils.js"></script>
+
+<script>
+    // 返回列表页函数
+    function back() {
+        window.location.href = '../news/list.html';
+    }
+
+    Vue.prototype.myFilters = function (msg) {
+        if(msg != null){
+            return msg.replace(/\n/g, "<br>").replace(/<img/g, '<img style="max-width:100%;height:auto;margin:15px auto;display:block;"');
+        }else{
+            return "";
+        }
+    };
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            userId: localStorage.getItem("userid"),//当前登录人的id
+            sessionTable: localStorage.getItem("userTable"),//登录账户所在表名
+            role: localStorage.getItem("role"),//权限
+            user:{},//当前登录用户信息
+            // 轮播图
+            swiperList: [],//用于当前表的图片
+            // 数据详情
+            detail: {
+                id: 0,
+                newsName: '',
+                insertTime: '',
+                newsPhoto: '',
+                newsContent: ''
+            },
+            // 商品标题
+            title: '',
+            totalScore: 0,//评分
+            baseUrl:"",//路径
+            storeupFlag: 0,//收藏 [0为收藏 1已收藏]
+            //系统推荐
+            newsRecommendList: [],
+                // 当前详情页表
+            detailTable: 'news',
+        },
+        methods: {
+            //分享
+            share(){
+                let element = document.createElement("textarea");
+                element.value = "http://localhost:8080/xiaoyunhuiguanli/front/index.html?url=./pages/news/detail.html?id="+this.detail.id;
+                document.body.appendChild(element);
+                element.select();
+                element.setSelectionRange(0, element.value.length);
+                document.execCommand('copy');
+                document.body.removeChild(element);
+                layui.layer.msg('复制分享页面成功,快去分享吧!', {time: 2000,icon: 6});
+            },
+
+            jump(url) {
+                jump(url)
+            },
+            isAuth(tablename, button) {
+                return isFrontAuth(tablename, button)
+            },
+            //预约
+            newsYuyue(){
+                let _this = this;
+                var mymessage = confirm("确定要预约吗？");if(!mymessage){return false;}
+
+                let data={
+                    newsId:_this.detail.id,
+                    yonghuId:localStorage.getItem("userid"),
+                    newsOrderYesnoTypes:1,
+                }
+                // 提交数据
+                layui.http.requestJson('newsOrder/add', 'post', data, function (res) {
+                    if(res.code == 0) {
+                        layui.layer.msg('预约成功', {
+                            time: 2000,
+                            icon: 6
+                        }, function () {
+                            _this.jump("../newsOrder/list.html");
+                        });
+                    }else{
+                        layui.layer.msg(res.msg, {
+                            time: 5000,
+                            icon: 5
+                        });
+                    }
+                });
+            },
+
+            }
+    });
+
+    layui.use(['layer', 'form', 'element', 'carousel', 'http', 'jquery', 'laypage', 'util'], function () {
+        var layer = layui.layer;
+        var util = layui.util;
+        var element = layui.element;
+        var form = layui.form;
+        var carousel = layui.carousel;
+        var http = layui.http;
+        var jquery = layui.jquery;
+        var laypage = layui.laypage;
+        vue.baseUrl = http.baseurl
+
+        localStorage.setItem("goUtl","./pages/news/detail.html?id="+ http.getParam('id'))
+
+        var limit = 10;
+
+        let table = localStorage.getItem("userTable");
+        if(table){
+            http.request(table+"/session", 'get', {}, function (data) {
+                vue.user = data.data;
+            });
+        }
+
+        // 数据ID
+        var id = http.getParam('id');
+        vue.detail.id = id;
+        // 详情信息
+        http.request('news/detail/' + id, 'get', {}, function(res) {
+            vue.detail = res.data || {};
+            vue.title = vue.detail.newsName || '';
+            if(vue.detail.newsContent) {
+                vue.detail.newsContent = vue.detail.newsContent
+                    .replaceAll("src=\"upload/","src=\""+vue.baseUrl+"upload/")
+                    .replaceAll(/<img/g,'<img style="max-width:100%;height:auto;margin:15px auto;display:block;"');
+            }
+        });
+    });
+</script>
+</body>
+</html>

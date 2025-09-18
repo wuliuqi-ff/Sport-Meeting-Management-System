@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>登录</title>
+    <!-- 引入 Layui 样式 -->
+    <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+    <!-- 主题样式 -->
+    <link rel="stylesheet" href="../../css/theme.css" />
+
+    <style type="text/css">
+        /* 登录页整体布局，居中且铺满视口 */
+        .login {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100vw;
+          height: 100vh;
+          background-attachment: fixed;
+          background-size: cover;
+          background-position: center;
+          background-image: url(/xiaoyunhuiguanli/img/fbg.jpg);
+        }
+
+        /* 登录表单容器，改为简洁方形 + 毛玻璃效果 */
+        .login-form {
+          box-sizing: border-box;
+          width: 400px;
+          min-height: 360px;
+          padding: 30px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          /* 毛玻璃效果关键属性 */
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
+          background-color: rgba(255, 255, 255, 0.05); /* 调整背景色透明度 */
+          border: 1px solid rgba(255, 255, 255, 0.3); /* 调整边框颜色透明度 */
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 提示信息样式，如“运动会官网” */
+        .msg-warn.title {
+          text-align: center;
+          padding: 15px;
+          margin: 0 auto 20px;
+          width: 80%;
+          background-color: transparent; /* 背景透明 */
+          color: #5e30d8; /* 字体颜色改为 #5e30d8 */
+          font-size: 20px;
+          border-radius: 8px;
+          line-height: 1.4;
+          border: none;
+        }
+
+        /* 表单项目间距 */
+        .form-item {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          box-sizing: border-box;
+          margin-bottom: 16px;
+        }
+
+        /* 输入框基础样式 */
+        .form-item input {
+          width: 100%;
+          height: 44px;
+          padding: 0 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 14px;
+          outline: none;
+          background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* 输入框聚焦效果 */
+        .form-item input:focus {
+          border-color: var(--publicMainColor);
+          box-shadow: 0 0 5px rgba(30, 144, 255, 0.2);
+        }
+
+        /* 登录按钮样式 */
+        .btn-submit {
+          display: block;
+          width: 100%;
+          height: 44px;
+          background-color: #5e30d8;
+          color: #fff;
+          font-size: 16px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+        }
+
+        .btn-submit:hover {
+          background-color: #5e30d8;
+        }
+
+        /* 注册链接样式 */
+        .txt {
+          text-align: center;
+          margin-top: 10px;
+          font-size: 12px;
+          color: #5e30d8;
+        }
+
+        .txt a {
+          color: inherit;
+          text-decoration: none;
+        }
+
+        .txt a:hover {
+          text-decoration: underline;
+        }
+
+        /* 验证码相关（默认隐藏，按需调整） */
+        #loginForm .codes {
+          display: none;
+        }
+
+        #loginForm .codes input {
+          width: calc(100% - 84px);
+          height: 44px;
+          border-color: #1e90ff;
+        }
+
+        #loginForm .codes .nums {
+          width: 84px;
+          height: 44px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #f5f5f5;
+          border: 1px solid #1e90ff;
+          border-left: none;
+          cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app" class="login">
+    <form id="loginForm" class="layui-form login-form">
+        <!-- 提示信息，如“运动会官网” -->
+        <div class="msg-warn hide title" v-if="true"
+             :style='{"padding":"15px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 auto 20px","borderColor":"rgba(0,0,0,1)","backgroundColor":"transparent","color":"#5e30d8","isshow":true,"borderRadius":"8px","borderWidth":"0","width":"80%","lineHeight":"50px","fontSize":"28px","borderStyle":"solid"}'>
+            校园运动会官网
+        </div>
+
+        <!-- 账号输入框 -->
+        <div class="form-item">
+            <input type="text" name="username" required lay-verify="required" placeholder="请输入账号" autocomplete="off"
+                   class="layui-input">
+        </div>
+
+        <!-- 密码输入框 -->
+        <div class="form-item">
+            <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
+                   class="layui-input">
+        </div>
+
+        <!-- 验证码（默认隐藏，按需开启） -->
+        <div v-if="false" class="form-item codes">
+            <input type="text" id="code" placeholder="请输入验证码" class="layui-input">
+            <div class="nums" id="nums"
+                 style="display: flex;justify-content: center;align-items: center;">
+            </div>
+        </div>
+
+        <!-- 登录按钮 -->
+        <button class="layui-btn layui-btn-fluid btn-submit" lay-submit lay-filter="login">登录</button>
+
+        <!-- 注册链接 -->
+        <p class="txt">
+            <a href="javascript:registerClick('yonghu')">注册用户</a>
+        </p>
+    </form>
+</div>
+
+<script src="../../layui/layui.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../xznstatic/js/element.min.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+
+<script type="text/javascript">
+    // Vue 实例
+    var vue = new Vue({
+      el: '#app',
+      data: {
+        menu: menu // 需确保 menu 已定义
+      },
+      methods: {
+        jump(url) {
+          jump(url); // 需确保 jump 函数已定义
+        }
+      }
+    });
+
+    // 验证码逻辑（Layui 模块）
+    layui.use(['layer', 'element', 'carousel', 'form', 'http', 'jquery'], function () {
+      var layer = layui.layer;
+      var element = layui.element;
+      var carousel = layui.carousel;
+      var form = layui.form;
+      var http = layui.http;
+      var $ = layui.jquery;
+
+      // 验证码配置
+      var codes = [
+        { num: 1, color: '#000', rotate: '10deg', size: '16px' },
+        { num: 2, color: '#000', rotate: '10deg', size: '16px' },
+        { num: 3, color: '#000', rotate: '10deg', size: '16px' },
+        { num: 4, color: '#000', rotate: '10deg', size: '16px' }
+      ];
+
+      // 生成随机验证码
+      function randomString() {
+        var chars = [
+          'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+          'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+          'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+          'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+          'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2',
+          '3', '4', '5', '6', '7', '8', '9'
+        ];
+        var colors = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+        var sizes = ['14', '15', '16', '17', '18'];
+
+        for (var i = 0; i < codes.length; i++) {
+          // 随机字符
+          var charKey = Math.floor(Math.random() * chars.length);
+          codes[i].num = chars[charKey];
+          // 随机颜色
+          var color = '#';
+          for (var j = 0; j < 6; j++) {
+            var colorKey = Math.floor(Math.random() * colors.length);
+            color += colors[colorKey];
+          }
+          codes[i].color = color;
+          // 随机旋转
+          var rotate = Math.floor(Math.random() * 45);
+          var plus = Math.floor(Math.random() * 2);
+          if (plus === 1) rotate = '-' + rotate;
+          codes[i].rotate = `rotate(${rotate}deg)`;
+          // 随机字号
+          var sizeKey = Math.floor(Math.random() * sizes.length);
+          codes[i].size = `${sizes[sizeKey]}px`;
+        }
+
+        // 渲染到页面
+        var str = codes.map(item =>
+          `<span style="color:${item.color};transform:${item.rotate};font-size:${item.size};padding:0 3px;display:inline-block">${item.num}</span>`
+        ).join('');
+        $('#nums').html(str);
+      }
+
+      // 点击验证码切换
+      $('#nums').click(function () {
+        randomString();
+      });
+
+      // 初始化验证码
+      randomString();
+
+      // 登录逻辑
+      form.on('submit(login)', function (data) {
+        data = data.field;
+        data.role = 'yonghu';
+
+        // 验证码校验（默认关闭，按需开启）
+        if (false) {
+          var codeArr = codes.map(item => item.num);
+          if (codeArr.join('').toLowerCase() !== $('#code').val().toLowerCase()) {
+            layer.msg('请输入正确的验证码', { icon: 5 });
+            randomString();
+            return false;
+          }
+        }
+
+        // 模拟登录请求（替换为真实接口）
+        http.request(data.role + '/login', 'get', data, function (res) {
+          layer.msg('登录成功', { time: 2000, icon: 6 });
+          // 存储登录态
+          localStorage.setItem('Token', res.token);
+          localStorage.setItem('role', $('#role:checked').attr('title') || 'yonghu');
+          localStorage.setItem('userTable', data.role);
+          localStorage.setItem('sessionTable', data.role);
+          localStorage.setItem('adminName', data.username);
+
+          // 获取用户信息（模拟）
+          http.request(data.role + '/session', 'get', {}, function (res) {
+            localStorage.setItem('userid', res.data.id);
+            // 跳转首页
+            window.location.href = '../../index.html';
+          });
+        });
+
+        return false;
+      });
+    });
+
+    // 注册跳转
+    function registerClick(tablename) {
+      window.location.href = `../${tablename}/register.html?tablename=${tablename}`;
+    }
+</script>
+</body>
+
+</html>

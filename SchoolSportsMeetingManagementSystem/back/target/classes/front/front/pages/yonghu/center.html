@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>个人中心</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <!-- 引入element样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+    <!-- 样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <!-- 主题（主要颜色设置） -->
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <!-- 通用的css -->
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+
+    <!-- 配置Tailwind自定义主题 - 主色调改为#9da9e2 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#9da9e2',      // 账户管理主色调
+                        secondary: '#36CFC9',
+                        accent: '#FF7D00',
+                        dark: '#1D2129',
+                        light: '#F2F3F5',
+                        success: '#52C41A',
+                        warning: '#FAAD14',
+                        danger: '#FF4D4F',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 12px rgba(0, 0, 0, 0.05)',
+                        'hover': '0 6px 16px rgba(0, 0, 0, 0.08)',
+                    }
+                },
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .transition-all-300 {
+                transition: all 0.3s ease;
+            }
+            .bg-gradient-primary {
+                background: linear-gradient(135deg, #9da9e2 0%, #7b88c9 100%); /* 渐变色调整为#9da9e2系 */
+            }
+            .form-input-focus {
+                @apply focus:ring-2 focus:ring-primary/30 focus:border-primary focus:outline-none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-inter text-dark">
+<div id="app">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-user-circle text-primary text-2xl"></i> <!-- 图标颜色使用primary -->
+                <h1 class="text-xl font-bold text-primary">个人中心</h1> <!-- 标题颜色使用primary -->
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 text-gray-600">
+                    <img v-if="detail.yonghuPhoto" :src="baseUrl+detail.yonghuPhoto" alt="用户头像" class="w-8 h-8 rounded-full object-cover border-2 border-primary/20"> <!-- 边框颜色使用primary半透明 -->
+                    <img v-else src="https://picsum.photos/200/200?random=1" alt="默认头像" class="w-8 h-8 rounded-full object-cover border-2 border-primary/20">
+                    <span class="hidden md:inline-block">{{ detail.yonghuName || '用户中心' }}</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- 个人中心菜单 -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-xl shadow-card overflow-hidden transition-all-300 hover:shadow-hover">
+                    <div class="bg-gradient-primary p-6"> <!-- 渐变背景使用primary -->
+                        <h3 class="text-white text-xl font-semibold mb-1 flex items-center">
+                            <i class="fa fa-user-circle mr-2"></i>账户管理
+                        </h3>
+                        <p class="text-white/80 text-sm">USER / CENTER</p>
+                    </div>
+                    <ul class="divide-y divide-gray-100">
+                        <li v-for="(item,index) in centerMenu" v-bind:key="index" class="transition-all-300">
+                            <a :href="'javascript:jump(\''+item.url+'\')'"
+                               class="flex items-center px-6 py-4 text-gray-700 hover:bg-light/70 transition-all-300"
+                               :class="index==0 ? 'bg-primary/10 text-primary font-medium border-l-4 border-primary' : ''"> <!-- 选中状态使用primary -->
+                                <i class="fa fa-cog w-6 text-center mr-3"></i>
+                                <span>{{item.name}}</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- 账户状态卡片 -->
+                    <div class="p-6 bg-light/50">
+                        <div class="text-center">
+                            <div class="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md mb-4">
+                                <img v-if="detail.yonghuPhoto" :src="baseUrl+detail.yonghuPhoto" alt="用户头像" class="w-full h-full object-cover">
+                                <img v-else src="https://picsum.photos/200/200?random=1" alt="默认头像" class="w-full h-full object-cover">
+                            </div>
+                            <h4 class="font-semibold text-lg mb-1">{{ detail.yonghuName || '用户名称' }}</h4>
+                            <p class="text-sm text-gray-500 mb-3">{{ detail.username || '账户名' }}</p>
+                            <div class="flex justify-center space-x-2">
+                                    <span class="bg-primary/10 text-primary text-xs px-3 py-1 rounded-full"> <!-- 状态标签使用primary -->
+                                        <i class="fa fa-clock-o mr-1"></i>已注册 {{ getRegisterDays() }} 天
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 个人信息表单 -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-xl shadow-card overflow-hidden transition-all-300 hover:shadow-hover">
+                    <div class="p-6 border-b border-gray-100">
+                        <h2 class="text-xl font-bold text-dark flex items-center">
+                            <i class="fa fa-user-circle text-primary mr-2"></i> <!-- 图标颜色使用primary -->
+                            <span v-if="!changePassword">个人信息</span>
+                            <span v-if="changePassword">修改密码</span>
+                        </h2>
+                    </div>
+
+                    <form class="layui-form p-6" v-if="!changePassword">
+                        <!-- 主键 -->
+                        <input type="hidden" v-model="detail.id" name="id" id="id" />
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="layui-form-item">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">账户</label>
+                                <div class="layui-input-block input">
+                                    <input type="text" v-model="detail.username" name="username" id="username"
+                                           lay-verify="required" placeholder="账户" autocomplete="off"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-md form-input-focus">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">用户名称</label>
+                                <div class="layui-input-block input">
+                                    <input type="text" v-model="detail.yonghuName" name="yonghuName" id="yonghuName"
+                                           lay-verify="required" placeholder="用户名称" autocomplete="off"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-md form-input-focus">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">用户手机号</label>
+                                <div class="layui-input-block input">
+                                    <input type="text" v-model="detail.yonghuPhone" name="yonghuPhone" id="yonghuPhone"
+                                           lay-verify="required|phone" placeholder="用户手机号" autocomplete="off"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-md form-input-focus">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">用户邮箱</label>
+                                <div class="layui-input-block input">
+                                    <input type="text" v-model="detail.yonghuEmail" name="yonghuEmail" id="yonghuEmail"
+                                           lay-verify="required" placeholder="用户邮箱" autocomplete="off"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-md form-input-focus">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">用户身份证号</label>
+                                <div class="layui-input-block input">
+                                    <input type="text" v-model="detail.yonghuIdNumber" name="yonghuIdNumber" id="yonghuIdNumber"
+                                           lay-verify="required|identity" placeholder="用户身份证号" autocomplete="off"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-md form-input-focus">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">性别</label>
+                                <div class="layui-input-block select">
+                                    <el-select v-model="detail.sexTypes" filterable placeholder="请选择性别"
+                                               style="width: 100%;" name="sexTypes" id="sexTypes">
+                                        <el-option
+                                                v-for="(item,index) in sexTypesList"
+                                                v-bind:key="item.codeIndex"
+                                                :label="item.indexName"
+                                                :value="item.codeIndex">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item mt-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">用户头像</label>
+                            <div class="flex items-center">
+                                <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 mr-4">
+                                    <img id="yonghuPhotoImg" :src="baseUrl+detail.yonghuPhoto || 'https://picsum.photos/200/200?random=1'"
+                                         class="w-full h-full object-cover">
+                                </div>
+                                <input type="hidden" v-model="detail.yonghuPhoto" id="yonghuPhoto" name="yonghuPhoto" />
+                                <button id="yonghuPhotoUpload"
+                                        class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md transition-all-300 flex items-center"> <!-- 按钮颜色使用primary -->
+                                    <i class="fa fa-upload mr-2"></i>上传头像
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item mt-8">
+                            <div class="flex flex-wrap gap-4 justify-center">
+                                <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-md transition-all-300"
+                                        class="layui-btn btn-submit btn-theme" lay-submit lay-filter="*"> <!-- 按钮颜色使用primary -->
+                                    <i class="fa fa-save mr-2"></i>更新信息
+                                </button>
+                                <button class="bg-secondary hover:bg-secondary/90 text-white px-6 py-2.5 rounded-md transition-all-300"
+                                        @click="xiugaimima()">
+                                    <i class="fa fa-lock mr-2"></i>修改密码
+                                </button>
+                                <button class="bg-danger hover:bg-danger/90 text-white px-6 py-2.5 rounded-md transition-all-300"
+                                        @click="logout">
+                                    <i class="fa fa-sign-out mr-2"></i>退出登录
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div v-if="changePassword" class="p-6">
+                        <div class="max-w-md mx-auto">
+                            <div class="layui-form-item mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">旧密码</label>
+                                <div class="layui-input-block input">
+                                    <input type="password" v-model="oldPassword"
+                                           lay-verify="required" placeholder="请输入旧密码"
+                                           autocomplete="off"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-md form-input-focus">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">新密码</label>
+                                <div class="layui-input-block input">
+                                    <input type="password" v-model="newPassword"
+                                           lay-verify="required" placeholder="请输入新密码"
+                                           autocomplete="off"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-md form-input-focus">
+                                    <p class="text-xs text-gray-500 mt-1">密码长度至少6位，包含字母和数字</p>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
+                                <div class="layui-input-block input">
+                                    <input type="password" v-model="confirmPassword"
+                                           lay-verify="required" placeholder="请再次输入新密码"
+                                           autocomplete="off"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-md form-input-focus">
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 justify-center mt-8">
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2.5 rounded-md transition-all-300"
+                                        @click="back()">
+                                    <i class="fa fa-arrow-left mr-2"></i>返回
+                                </button>
+                                <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-md transition-all-300"
+                                        @click="queren()"> <!-- 按钮颜色使用primary -->
+                                    <i class="fa fa-check mr-2"></i>确认修改
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 mt-10">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-500 text-sm">© 2025 个人中心管理系统. 保留所有权利.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-primary transition-all-300"> <!--  hover颜色使用primary -->
+                        <i class="fa fa-question-circle"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-all-300">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-all-300">
+                        <i class="fa fa-user-circle"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- layui -->
+<script src="../../layui/layui.js"></script>
+<!-- vue -->
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 组件配置信息 -->
+<script src="../../js/config.js"></script>
+<!-- 扩展插件配置信息 -->
+<script src="../../modules/config.js"></script>
+<!-- 工具方法 -->
+<script src="../../js/utils.js"></script>
+<!-- 校验格式工具类 -->
+<script src="../../js/validate.js"></script>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            //项目路径
+            baseUrl: "",
+
+            //修改密码
+            changePassword: false,
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+            detail: {
+                username: '',
+                password: '',
+                yonghuName: '',
+                yonghuPhone: '',
+                yonghuIdNumber: '',
+                yonghuPhoto: '',
+                sexTypes: '',//数字
+                sexValue: '',//数字对应的值
+                yonghuEmail: '',
+                yonghuDelete: '',
+                insertTime: '',
+                createTime: '',
+            },
+            sexTypesList: [],
+            centerMenu: centerMenu
+        },
+        methods: {
+            // 计算注册天数
+            getRegisterDays() {
+                if (!this.detail.insertTime) return '0';
+                const registerDate = new Date(this.detail.insertTime);
+                const today = new Date();
+                const diffTime = Math.abs(today - registerDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays;
+            },
+
+            xiugaimima() {
+                this.changePassword = true;
+                // 重置密码表单
+                this.oldPassword = '';
+                this.newPassword = '';
+                this.confirmPassword = '';
+            },
+            back() {
+                this.changePassword = false;
+            },
+            queren() {
+                // 提交代码
+                let _this = this;
+                if (_this.confirmPassword !== _this.newPassword) {
+                    _this.$message.error("两次密码不一致");
+                    return;
+                }
+
+                if (_this.newPassword.length < 6) {
+                    _this.$message.error("密码长度至少6位");
+                    return;
+                }
+
+                // 密码强度验证
+                const hasLetter = /[a-zA-Z]/.test(_this.newPassword);
+                const hasNumber = /\d/.test(_this.newPassword);
+                if (!hasLetter || !hasNumber) {
+                    _this.$message.error("密码必须包含字母和数字");
+                    return;
+                }
+
+                _this.detail.password = _this.newPassword; // 密码重新赋值
+                layui.http.request(`yonghu/updatePassword`, 'get', {
+                    oldPassword: _this.oldPassword,
+                    newPassword: _this.newPassword
+                }, function (res) {
+                    _this.$message.success("修改密码成功,下次登录用新密码");
+                    _this.changePassword = false;
+                });
+            },
+            jump(url) {
+                jump(url);
+            },
+            logout() {
+                if (confirm('确定要退出登录吗？')) {
+                    localStorage.removeItem('Token');
+                    localStorage.removeItem('role');
+                    localStorage.removeItem('sessionTable');
+                    localStorage.removeItem('adminName');
+                    localStorage.removeItem('userid');
+                    localStorage.removeItem('userTable');
+                    localStorage.removeItem('iframeUrl');
+                    window.parent.location.href = '../login/login.html';
+                }
+            }
+        }
+    });
+
+    layui.use(['layer', 'element', 'carousel', 'http', 'jquery', 'laydate', 'form', 'upload'], function () {
+        var layer = layui.layer;
+        var element = layui.element;
+        var carousel = layui.carousel;
+        var http = layui.http;
+        var jquery = layui.jquery;
+        var form = layui.form;
+        var upload = layui.upload;
+        vue.baseUrl = http.baseurl;
+
+
+        // 充值
+        jquery('#btn-recharge').click(function (e) {
+            layer.open({
+                type: 2,
+                title: '用户充值',
+                area: ['900px', '600px'],
+                content: '../recharge/recharge.html'
+            });
+        });
+
+        // 查询字典表相关
+        // 性别的查询和初始化
+        sexTypesSelect();
+        // 日期效验规则及格式
+        dateTimePick();
+        // 表单效验规则
+        form.verify({
+            // 正整数效验规则
+            integer: [
+                /^[1-9][0-9]*$/
+                , '必须是正整数'
+            ]
+            // 小数效验规则
+            , double: [
+                /^[0-9]{0,6}(\.[0-9]{1,2})?$/
+                , '最大整数位为6为,小数最大两位'
+            ]
+        });
+
+
+        // 上传 文件/图片
+        // 用户头像的文件上传
+        var yonghuPhotoUpload = upload.render({
+            //绑定元素
+            elem: '#yonghuPhotoUpload',
+            //上传接口
+            url: http.baseurl + 'file/upload',
+            // 请求头
+            headers: {
+                Token: localStorage.getItem('Token')
+            },
+            // 允许上传时校验的文件类型
+            accept: 'images',
+            before: function () {
+                //loading层
+                var index = layer.load(1, {
+                    shade: [0.1, '#fff'] //0.1透明度的白色背景
+                });
+            },
+            // 上传成功
+            done: function (res) {
+                console.log(res);
+                layer.closeAll();
+                if (res.code == 0) {
+                    layer.msg("上传成功", {
+                        time: 2000,
+                        icon: 6
+                    });
+                    var url = 'upload/' + res.file;
+                    vue.detail.yonghuPhoto = url;
+                } else {
+                    layer.msg(res.msg, {
+                        time: 2000,
+                        icon: 5
+                    });
+                }
+            },
+            //请求异常回调
+            error: function () {
+                layer.closeAll();
+                layer.msg("请求接口异常", {
+                    time: 2000,
+                    icon: 5
+                });
+            }
+        });
+        // 查询用户信息
+        let table = localStorage.getItem("userTable");
+
+        if (!table) {
+            layer.msg('请先登录', {
+                time: 2000,
+                icon: 5
+            }, function () {
+                window.parent.location.href = '../login/login.html';
+            });
+        }
+
+        http.request(`yonghu/session`, 'get', {}, function (data) {
+            // 表单赋值
+            vue.detail = data.data;
+        });
+
+        // 提交表单
+        form.on('submit(*)', function (data) {
+            data = vue.detail;
+            data['insertTime'] = jquery("#insertTime").val();
+            data['createTime'] = jquery("#createTime").val();
+            http.requestJson(table + '/update', 'post', data, function (res) {
+                layer.msg('修改成功', {
+                    time: 2000,
+                    icon: 6
+                }, function () {
+                    // 刷新页面
+                    window.location.reload();
+                });
+            });
+            return false;
+        });
+
+    });
+
+    // 日期框初始化
+    function dateTimePick() {
+    }
+
+    //性别的查询
+    function sexTypesSelect() {
+        //填充下拉框选项
+        layui.http.request("dictionary/page?page=1&limit=100&sort=&order=&dicCode=sex_types", "GET", {}, (res) => {
+            if (res.code == 0) {
+                vue.sexTypesList = res.data.list;
+            }
+        });
+    }
+</script>
+</body>
+</html>

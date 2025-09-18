@@ -1,0 +1,48 @@
+/* 改变主题色变量 */
+
+$--color-primary: #1E88E5 !default; // 主色调 - 深蓝色
+$--color-success: #4CAF50 !default;
+$--color-warning: #FFC107 !default;
+$--color-danger: #F44336 !default;
+$--color-info: #607D8B !default;
+// 定义 Sass 变量，后续用于颜色操作
+$publicMainColor: $--color-primary;
+$publicSubColor: darken($--color-primary, 20%);
+// 将 Sass 变量同步到 CSS 变量，供需要的地方使用
+:root {
+    --publicMainColor: #{$publicMainColor};
+    --publicSubColor: #{$publicSubColor};
+}
+
+
+/* 改变 icon 字体路径变量，必需 */
+
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+@import "~element-ui/packages/theme-chalk/src/index";
+
+/* 渐变色配置 */
+
+
+/* 假设侧边栏对应的选择器是 .index-aside，设置固定背景色 */
+
+.index-aside {
+    background-color: #0d102c !important;
+    /* 设置固定背景色 */
+    background-image: none !important;
+    /* 移除可能存在的渐变背景 */
+    color: white !important;
+    /* 侧边栏内文字颜色设为白色，提升可读性 */
+}
+
+
+/* 5. 顶部导航栏渐变（假设用到的场景，按实际调整选择器 ）*/
+
+.navbar {
+    background-image: linear-gradient(to right, #0f75ff, #28cada) !important;
+    color: white !important;
+}
+
+// 让 navbar 内所有子元素，都继承父元素（.navbar）的 color
+.navbar * {
+    color: inherit !important;
+}

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>论坛详情</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <!-- 样式 -->
+    <link rel="stylesheet" href="../../css/style.css" />
+    <!-- 主题（主要颜色设置） -->
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <!-- 通用的css -->
+    <link rel="stylesheet" href="../../css/common.css" />
+</head>
+<style>
+    /* 基础样式优化 */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        background-color: #f5f7fa;
+        padding: 20px 0;
+        line-height: 1.6;
+    }
+    #app {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* 标题区域优化 */
+    .title-container {
+        position: relative;
+        width: 100%;
+    }
+    .index-title {
+        text-align: center;
+        width: 100%;
+        padding: 20px 30px;
+        margin: 0 auto 30px;
+        border-radius: 8px;
+
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(211, 84, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    .index-title::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .index-title span:first-child {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+        opacity: 0.9;
+    }
+    .index-title span:last-child {
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    /* 返回按钮样式 */
+    .back-btn {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 15px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-50%) translateX(-3px);
+    }
+    .back-btn i {
+        font-size: 16px;
+    }
+
+    /* 论坛容器优化 */
+    .forum-container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    /* 帖子标题和信息优化 */
+    .title {
+        font-size: 24px;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        line-height: 1.4;
+    }
+    .auth-container {
+        color: #888;
+        font-size: 14px;
+        margin-bottom: 25px;
+        padding: 10px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .auth-container span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .auth-container span::before {
+        content: '•';
+        font-size: 16px;
+        color: #ddd;
+    }
+    .auth-container span:first-child::before {
+        content: none;
+    }
+
+    /* 帖子内容优化 */
+    .content {
+        color: #555;
+        font-size: 16px;
+        line-height: 1.8;
+        margin-bottom: 30px;
+        padding: 15px 0;
+    }
+    .content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+        margin: 15px 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* 评论区标题优化 */
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        margin: 30px 0 20px;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .btn-container .title {
+        font-size: 18px;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        border: none;
+        font-weight: 500;
+    }
+
+    /* 评论列表优化 */
+    .message-list {
+        margin: 20px 0 30px;
+    }
+    .message-item {
+        padding: 20px 0;
+        border-bottom: 1px solid #f5f5f5;
+        transition: all 0.3s ease;
+    }
+    .message-item:hover {
+        background-color: #fafafa;
+        padding-left: 10px;
+    }
+    .username-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .avator {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 12px;
+        border: 2px solid #f0f0f0;
+    }
+    .username {
+        font-weight: 500;
+        color: #333;
+        font-size: 15px;
+    }
+    .message {
+        color: #555;
+        font-size: 15px;
+        background-color: #f9f9f9;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-left: 60px;
+        position: relative;
+        line-height: 1.7;
+    }
+    .message::before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 15px;
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-right: 10px solid #f9f9f9;
+        border-bottom: 10px solid transparent;
+    }
+
+    /* 删除按钮优化 */
+    .message-item div:first-child {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .message-item div:first-child > div:last-child {
+        color: #ff4d4f;
+        cursor: pointer;
+        font-size: 13px;
+        padding: 3px 10px;
+        border-radius: 12px;
+
+        transition: all 0.2s ease;
+    }
+
+
+    /* 评论输入区优化 */
+    .layui-form-label {
+        font-size: 15px;
+        color: #666;
+        padding: 9px 15px;
+        width: auto !important;
+    }
+    .layui-input-block {
+        margin-left: 90px !important;
+        margin-top: 10px;
+    }
+    textarea {
+        width: 100% !important;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        padding: 12px 15px;
+        font-size: 14px;
+        resize: vertical;
+        transition: all 0.3s ease;
+    }
+    textarea:focus {
+        border-color: #d35400;
+        box-shadow: 0 0 0 2px rgba(211, 84, 0, 0.1);
+        outline: none;
+    }
+    .layui-form-item {
+        margin-bottom: 20px;
+    }
+    .btn-submit {
+        background-color: #d35400 !important;
+        border-color: #d35400 !important;
+        color: #fff !important;
+        padding: 0 20px !important;
+        border-radius: 6px !important;
+        height: 40px !important;
+        font-size: 15px !important;
+        transition: all 0.3s ease !important;
+    }
+    .btn-submit:hover {
+        background-color: #c0392b !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(211, 84, 0, 0.2);
+    }
+
+    /* 分页样式优化 */
+    .pager {
+        text-align: center;
+        padding: 20px 0;
+    }
+    .layui-laypage {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .layui-laypage a, .layui-laypage span {
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+    .layui-laypage a:hover {
+        color: #d35400;
+        border-color: #d35400;
+    }
+    .layui-laypage .layui-laypage-curr .layui-laypage-em {
+        background-color: #d35400;
+        border-radius: 4px;
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+        .forum-container {
+            padding: 15px;
+        }
+        .title {
+            font-size: 20px;
+        }
+        .layui-input-block {
+            margin-left: 0 !important;
+        }
+        .layui-form-label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .btn-submit {
+            width: 100% !important;
+        }
+        .message {
+            margin-left: 0;
+            margin-top: 10px;
+        }
+        .message::before {
+            display: none;
+        }
+        .auth-container {
+            flex-direction: column;
+            gap: 5px;
+        }
+        .auth-container span {
+            padding-left: 10px;
+        }
+        .back-btn {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+    }
+</style>
+<body>
+
+<div id="app">
+    <!-- 标题区域包含返回按钮 -->
+    <div class="title-container">
+        <div class="index-title sub_backgroundColor sub_borderColor">
+            <span>FORUM / INFORMATION</span>
+            <span>论坛</span>
+        </div>
+        <button class="back-btn" @click="goBack">
+            <i class="layui-icon">&#xe603;</i> 返回上一页
+        </button>
+    </div>
+
+    <div class="forum-container">
+        <h1 class="title">{{detail.forumName}}</h1>
+
+        <div v-if="detail.yonghuId" class="auth-container">
+            <span>发布人：{{detail.yonghuName}}</span>
+            <span>发布人权限：用户</span>
+            <span>时间：{{detail.insertTime}}</span>
+        </div>
+        <div v-if="detail.usersId" class="auth-container">
+            <span>发布人：管理员</span>
+            <span>发布人权限：管理员</span>
+            <span>时间：{{detail.insertTime}}</span>
+        </div>
+
+        <div class="content" v-html="detail.forumContent"></div>
+
+        <div class="btn-container main_backgroundColor">
+            <div class="title">评论列表</div>
+        </div>
+
+        <div class="message-list" v-if="dataList&&dataList.length">
+            <div class="message-item" v-for="(item,index) in dataList" v-bind:key="index">
+                <div>
+                    <div v-if="item.yonghuId" class="username-container">
+                        <img class="avator" :src="baseUrl+item.yonghuPhoto" alt="用户头像">
+                        <span class="username">用户：{{item.yonghuName}}</span>
+                    </div>
+                    <div v-if="item.usersId" class="username-container">
+                        <img class="avator" src="../../img/avator.png" alt="管理员头像">
+                        <span class="username">管理员</span>
+                    </div>
+                    <div v-if="user.id == item.yonghuId" @click="deleteData(item)">删除</div>
+                </div>
+                <div class="content">
+                    <span class="message">{{item.forumContent}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="!dataList||dataList.length === 0" style="text-align: center; padding: 30px; color: #999; font-size: 15px;">
+            暂无评论，快来发表第一条评论吧~
+        </div>
+
+        <div>
+            <label class="layui-form-label">评论内容：</label>
+            <div class="layui-input-block">
+                <textarea v-model="ruleForm.forumContent" lay-verify="required" name="forumContent" id="forumContent" autocomplete="off" placeholder="请输入您的评论..."></textarea>
+            </div>
+            <div class="layui-form-item main_borderColor">
+                <div class="layui-input-block" style="text-align: right;">
+                    <button class="layui-btn btn-submit" @click="addComment">添加评论</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pager" id="pager"></div>
+    </div>
+</div>
+
+<!-- 引入相关脚本 -->
+<script src="../../layui/layui.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../xznstatic/js/element.min.js"></script>
+<link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            //当前登录用户信息
+            user: {},
+            //项目路径
+            baseUrl:"",
+            id:null,
+            dialogVisible:false,
+            detail: {},
+            dataList: [],
+            dialogFormVisible: false,
+            formLabelWidth: '120px',
+            ruleForm:{
+                forumStateTypes: 2,
+                forumContent: '',
+                forumPhoto: '',
+            },
+            rules: {
+                forumContent: [
+                    { required: true, message: '请输入回复内容', trigger: 'blur' }
+                ],
+            },
+        },
+        methods: {
+            // 返回上一页方法
+            goBack() {
+                // 优先使用history返回，若无法返回则跳转到论坛列表页
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    this.jump("./list.html");
+                }
+            },
+
+            deleteData(data){
+                var mymessage = confirm("确定要删除这条评论吗？");
+                if(!mymessage){
+                    return false;
+                }
+                // 删除信息
+                layui.http.requestJson(`forum/delete`, 'post', [data.id], (res) => {
+                    if(res.code==0){
+                        layer.msg('删除成功', {
+                            time: 2000,
+                            icon: 6
+                        });
+                        window.location.reload();
+                    }else{
+                        layer.msg(res.msg, {
+                            time: 2000,
+                            icon: 2
+                        });
+                    }
+                });
+            },
+            jump(url) {
+                jump(url)
+            },
+            addComment(){
+                let _this = this;
+                _this.ruleForm.superIds = this.detail.id
+                if(!_this.ruleForm.forumContent || _this.ruleForm.forumContent.trim() === ""){
+                    layer.msg('评论内容不能为空', {
+                        time: 1000,
+                        icon: 5
+                    });
+                    return;
+                }
+                layui.http.requestJson('forum/save', 'post',_this.ruleForm, function (res) {
+                    layer.msg('评论成功', {
+                        time: 1000,
+                        icon: 6
+                    }, function () {
+                        _this.ruleForm.forumContent = ''; // 清空输入框
+                        _this.pageList();
+                        _this.dialogFormVisible = false
+                    });
+                });
+            },
+            pageList() {
+                let _this = this
+                layui.http.request('forum/info/' + _this.id, 'get', {}, function(res) {
+                    // 处理图片路径并添加样式
+                    res.data.forumContent = res.data.forumContent
+                        .replace("<img","<img class=\"daxiao\"")
+                        .replace("src=\"upload/","src=\""+layui.http.baseurl+ "upload/");
+                    _this.detail = res.data
+
+                    // 获取评论信息
+                    var data = {
+                        superIds : _this.detail.id,
+                        forumStateTypes:2
+                    }
+                    layui.http.request('forum/list', 'get', data, function(res) {
+                        _this.dataList = res.data.list
+                    });
+                });
+            },
+        }
+    })
+
+    layui.use(['layer', 'element', 'carousel', 'laypage', 'http', 'jquery','upload'], function() {
+        var layer = layui.layer;
+        var element = layui.element;
+        var carousel = layui.carousel;
+        var laypage = layui.laypage;
+        var http = layui.http;
+        var jquery = layui.jquery;
+        var upload = layui.upload;
+
+        localStorage.setItem("goUtl","./pages/forum/detail.html?id="+ http.getParam('id'))
+
+        vue.baseUrl = http.baseurl
+        vue.id = http.getParam('id');
+
+        let table = localStorage.getItem("userTable");
+        if (table) {
+            http.request(table + "/session", 'get', {}, function (data) {
+                vue.user = data.data;
+            });
+        }
+
+        var forumPhotoUpload = upload.render({
+            //绑定元素
+            elem: '#forumPhotoUpload',
+            //上传接口
+            url: http.baseurl + 'file/upload',
+            // 请求头
+            headers: {
+                Token: localStorage.getItem('Token')
+            },
+            // 允许上传时校验的文件类型
+            accept: 'images',
+            before: function() {
+                //loading层
+                var index = layer.load(1, {
+                    shade: [0.1, '#fff'] //0.1透明度的白色背景
+                });
+            },
+            // 上传成功
+            done: function(res) {
+                console.log(res);
+                layer.closeAll();
+                if (res.code == 0) {
+                    layer.msg("上传成功", {
+                        time: 2000,
+                        icon: 6
+                    })
+                    var url = 'upload/' + res.file;
+                    vue.ruleForm.forumPhoto = url;
+                } else {
+                    layer.msg(res.msg, {
+                        time: 2000,
+                        icon: 5
+                    })
+                }
+            },
+            //请求异常回调
+            error: function() {
+                layer.closeAll();
+                layer.msg("请求接口异常", {
+                    time: 2000,
+                    icon: 5
+                })
+            }
+        });
+
+        vue.pageList()
+    });
+</script>
+</body>
+</html>
