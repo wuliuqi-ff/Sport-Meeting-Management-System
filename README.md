@@ -49,7 +49,7 @@ Sport-Meeting-Management-System 是一套基于 SpringBoot + Vue 前后端分离
 <img width="1874" height="915" alt="image" src="https://github.com/user-attachments/assets/c834b7a1-4b56-43f6-96b7-288bfde868b6" />
 个人中心页面<br>
 <img width="1875" height="910" alt="image" src="https://github.com/user-attachments/assets/a02a5ba9-6660-4d87-b364-f6497ce3fe94" />
-数据库预览
+数据库预览<br>
 <img width="585" height="290" alt="image" src="https://github.com/user-attachments/assets/e8553b8f-074f-4d65-bbf8-d03f2f89a48a" />
 
 
